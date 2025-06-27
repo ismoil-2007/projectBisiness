@@ -9,14 +9,16 @@
 </head>
 
 <body>
-
+<div id="offline-warning" style='padding: top;: 300px;' class="offline-warning">
+  Нет подключения к интернету. Функции заблокированы.
+</div>
 	<!-- Поиск и добавление -->
 	<div class="container">
     <select class='odam'>
         <option value="Dilobar">Dilobar Qurbanova</option>
         <option value="Murodullo">Murodullo Mamatkulov</option>
     </select>
-
+    <h1 class='dataToday'></h1>
     <input type="search" class='searchClient' placeholder='Поиск клиента...'>
     <button class='addBtnClient btn info-btn'>+ Добавить клиента</button>
     <button class='btn print-btn'>🖨 Печать</button>
@@ -44,8 +46,8 @@
 			<select name="place" required>
 				<option value="">Выберите место</option>
 				<option value="Садбарг">Садбарг</option>
-				<option value="Жд-Вокзал">Жд Вокзал</option>
-				<option value="Авто-База">Авто База</option>
+				<option value="Жд-вокзал">Жд Вокзал</option>
+				<option value="Авто-база">Авто База</option>
 				<option value="Фаравон">Фаравон</option>
 				<option value="Мехргон">Мехргон</option>
 			</select>
@@ -57,19 +59,30 @@
 	<!-- Информация о клиенте -->
 	<dialog class='dialogInfo'>
 		<button class='dialogInfoClose btn delete-btn'>Закрыть</button><br>
+		<label class='dataToday22'></label><br>
 		<label class='placeInfo'></label><br>
 		<label class='clientInfo'></label><br>
 		<label class='creditInfo'></label><br>
 
-		<input type="text" class='qarzNimaInfo' placeholder="Что купил">
-		<input type="number" class='plusInfo' placeholder="Добавить долг">
+		<input type="text" class='qarzNimaInfo' placeholder="Что купил" required>
+		<input type="text" class='qarzNechiInfo' placeholder="количество" required>
+		<input type="text" class='qarzNarkhInfo' placeholder="нархи" required>
+		<input style='display: none;' type="number" class='plusInfo' placeholder="Добавить долг">
+		<input type="date" class='addDolgDate' name="" id="">
+
 		<button class='plusBtnInfo btn info-btn'>Добавить</button><br>
 <br>
 <br>
 <br>
+<br>
+
+<h1>КАРЗ КАМ КИЛИШ</h1>
+<br>
 		<input type="number" class='minusInfo' placeholder="Списать долг">
+		<input type="date" class='spisatDolgDate' name="" id="">
 		<select class="sposobInfo" required>
 			<option value="">Способ оплаты</option>
+			<option value="Dushanbe Cити">Dushanbe Cити</option>
 			<option value="Наличи Пул">НАЛИЧНЫЙ ПУЛ</option>
 			<option value="Alif">ALIF MOBI</option>
 			<option value="AMONAT">AMONAT BANK</option>
@@ -84,7 +97,7 @@
 		<button class='addDialogClose btn delete-btn'>Закрыть</button>
 		<form action="" class='formAdd'>
 			<input type="text" name="client" placeholder="Имя клиента" required>
-			<input type="number" name="credit" placeholder="Қарз" required>
+			<input type="number" name="credit" placeholder="Қарз" value='0' style='display: none;'>
 			<select name="place" required>
 				<option value="">Выберите место</option>
 				<option value="Садбарг">Садбарг</option>

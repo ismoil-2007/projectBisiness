@@ -2,7 +2,10 @@ let Api = 'https://685d742c769de2bf0860b8a9.mockapi.io/system'
 let Api2 = 'https://685d742c769de2bf0860b8a9.mockapi.io/Murodullo'
 let odam = document.querySelector('.odam')
 odam.onchange = () => {
-	Api=odam.value === 'Murodullo' ? Api2 : 'https://685d742c769de2bf0860b8a9.mockapi.io/system'
+	Api =
+		odam.value === 'Murodullo'
+			? Api2
+			: 'https://685d742c769de2bf0860b8a9.mockapi.io/system'
 	getData()
 }
 let allCredit = document.querySelector('.allCredit')
@@ -16,10 +19,13 @@ export async function getData() {
 		}
 
 		let data = await response.json()
-		console.log(data);
-		
+		console.log(data)
+
 		getDataToTable(data)
-		allCredit.innerHTML = `<span>Қарз: ${data.reduce((acc, cur) => acc + Number(cur.credit), 0)} сомони</span>`
+		allCredit.innerHTML = `<span>Қарз: ${data.reduce(
+			(acc, cur) => acc + Number(cur.credit),
+			0
+		)} сомони</span>`
 	} catch (error) {
 		console.error(error)
 	}
@@ -48,10 +54,15 @@ export async function postData(data) {
 			body: JSON.stringify(data),
 		})
 		if (!response.ok) {
+			alert('Интернет кор накардест аз нав кӯшиш кунед')
 			throw new Error('Интернет кор накардест')
 		}
+
+		alert('Маълумотҳо муваффақият клиент илова шуд')
 		getData()
 	} catch (error) {
+		alert('Маълумотҳо клиент илова нашуд')
+
 		console.error(error)
 	}
 }
@@ -62,10 +73,14 @@ export async function deleteData(id) {
 			method: 'DELETE',
 		})
 		if (!response.ok) {
+			alert('Интернет кор накардест аз нав кӯшиш кунед')
 			throw new Error('Интернет кор накардест')
 		}
+		alert('Маълумотҳо муваффақият удалить шуд')
 		getData()
 	} catch (error) {
+		alert('Маълумотҳо клиент удалить нашуд')
+
 		console.error(error)
 	}
 }
@@ -81,12 +96,13 @@ export async function putData(id, data) {
 			body: JSON.stringify(data),
 		})
 		if (!response.ok) {
+			alert('Интернет кор накардест аз нав кӯшиш кунед')
 			throw new Error('Интернет кор накардест')
 		}
+		alert('Маълумотҳо муваффақият алиш када шуд')
 		getData()
 	} catch (error) {
+		alert('Интернет кор накардест аз нав кӯшиш кунед')
 		console.error(error)
 	}
 }
-
-

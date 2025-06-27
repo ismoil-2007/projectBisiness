@@ -1,6 +1,46 @@
 // Импортируем API-функции
 import { deleteData, getData, postData, putData, searching } from './api.js'
 
+
+const offlineWarning = document.getElementById('offline-warning')
+const allButtons = document.querySelectorAll('button') // Все кнопки на странице
+
+// Функция: отключить все кнопки
+// сделай так чтобы все открытие dialog close
+function blockActions() {
+  offlineWarning.style.display = 'block'
+	allButtons.forEach(btn => btn.setAttribute('disabled', true))
+	dialogInfo.close()
+	editClientDialog.close()
+	addDialog.close()
+}
+
+// Функция: разрешить действия
+function unblockActions() {
+  offlineWarning.style.display = 'none'
+  allButtons.forEach(btn => btn.removeAttribute('disabled'))
+}
+
+// Проверка при загрузке страницы
+window.addEventListener('load', () => {
+  if (!navigator.onLine) {
+    blockActions()
+  } else {
+    unblockActions()
+    getData() // Загружаем данные с сервера
+  }
+})
+
+// Слушаем события изменения подключения
+window.addEventListener('online', () => {
+  unblockActions()
+  getData() // Обновляем данные с сервера
+})
+
+window.addEventListener('offline', () => {
+  blockActions()
+})
+
 // Получаем DOM-элементы
 const box = document.querySelector('.box')
 const searchClient = document.querySelector('.searchClient')
@@ -30,6 +70,9 @@ const pulInfo = document.querySelector('.pulInfo')
 
 // Поля для работы с долгом
 const qarzNimaInfo = document.querySelector('.qarzNimaInfo')
+let qarzNechiInfo = document.querySelector('.qarzNechiInfo')
+let qarzNarkhInfo = document.querySelector('.qarzNarkhInfo')
+
 const plusInfo = document.querySelector('.plusInfo')
 const minusInfo = document.querySelector('.minusInfo')
 const sposobInfo = document.querySelector('.sposobInfo')
@@ -40,7 +83,21 @@ const minusBtnInfo = document.querySelector('.minusBtnInfo')
 const dialogInfoClose = document.querySelector('.dialogInfoClose')
 const addDialogClose = document.querySelector('.addDialogClose')
 const editClientDialogClose = document.querySelector('.editClientDialogClose')
+let spisatDolgDate = document.querySelector('.spisatDolgDate')
+spisatDolgDate.value = new Date().toISOString().split('T')[0] // Устанавливаем текущую дату
+let addDolgDate = document.querySelector('.addDolgDate')
+addDolgDate.value = new Date().toISOString().split('T')[0] // Устанавливаем текущую дату
+let dataToday = document.querySelector('.dataToday')
+let dataToday22 = document.querySelector('.dataToday22')
 
+
+dataToday.textContent = `Дата: ${new Date().toLocaleDateString('ru-RU', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric'
+})}`
+
+dataToday22.innerHTML = dataToday.innerHTML
 // Закрытие диалоговых окон
 editClientDialogClose.onclick = () => {
 	editClientDialog.close()
@@ -97,6 +154,7 @@ export function getDataToTable(data) {
 		btnInfo.classList.add('btn', 'info-btn')
 
 		btnInfo.onclick = () => {
+
 			clientInfo.textContent = `Клиент: ${client.client}`
 			creditInfo.innerHTML = `Қарз: ${client.credit} сомони<br>`
 			placeInfo.textContent = `Ҷои нишаст: ${client.place}`
@@ -190,25 +248,28 @@ export function getDataToTable(data) {
 			// Кнопка увеличения долга
 			plusBtnInfo.onclick = () => {
 				if (qarzNimaInfo.value.trim() !== '') {
-					const newDate = new Date()
+					const newDate = addDolgDate.value ? new Date(addDolgDate.value) : new Date()
 					const formattedDate = `${newDate.getFullYear()}-${String(
 						newDate.getMonth() + 1
 					).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`
 
 					client.creditHistory.push([
 						formattedDate,
-						`${plusInfo.value} сомони`,
-						qarzNimaInfo.value,
+						`${Number(Number(qarzNechiInfo.value) * Number(qarzNarkhInfo.value))} сомони`,
+						qarzNimaInfo.value+` ${qarzNechiInfo.value}штX${qarzNarkhInfo.value} сомони`,
 					])
 
 					putData(client.id, {
 						...client,
-						credit: Number(client.credit) + Number(plusInfo.value),
+						credit: Number(client.credit) + Number(Number(qarzNechiInfo.value) * Number(qarzNarkhInfo.value)),
 						creditHistory: client.creditHistory,
 					})
 
 					dialogInfo.close()
 					plusInfo.value = ''
+					qarzNechiInfo.value = ''
+					qarzNarkhInfo.value = ''
+					
 					qarzNimaInfo.value = ''
 					getData() // Обновляем данные
 				} else {
@@ -219,7 +280,7 @@ export function getDataToTable(data) {
 			// Кнопка уменьшения долга
 			minusBtnInfo.onclick = () => {
 				if (sposobInfo.value.trim() !== '' && minusInfo.value > 0) {
-					const newDate = new Date()
+					const newDate = spisatDolgDate.value ? new Date(spisatDolgDate.value) : new Date()
 					const formattedDate = `${newDate.getFullYear()}-${String(
 						newDate.getMonth() + 1
 					).padStart(2, '0')}-${String(newDate.getDate()).padStart(2, '0')}`
@@ -255,6 +316,9 @@ export function getDataToTable(data) {
 			dialogInfoClose.onclick = () => {
 				dialogInfo.close()
 				plusInfo.value = ''
+				qarzNechiInfo.value = ''
+			
+				qarzNarkhInfo.value = ''
 				minusInfo.value = ''
 				sposobInfo.value = ''
 				qarzNimaInfo.value = ''
